@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Mobile Networking Retrofit</string>
+    <string name="login_button_text">Login</string>
+    <string name="password_hint">Password</string>
+    <string name="username_hint">Username</string>
+    <string name="logout_button_text">Logout</string>
+    <string name="name">Name</string>
 </resources>
