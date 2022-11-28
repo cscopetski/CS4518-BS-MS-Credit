@@ -7,7 +7,16 @@ import { readFileSync } from "fs";
 const app = express();
 const users = JSON.parse(readFileSync("users.json", "utf8"));
 
+console.log("List of users:");
 console.log(users);
+
+console.log(
+  "\n*Normally passwords would never be stored as plain-text, they are here for easy testing purposes*\n"
+);
+
+console.log(
+  "You can edit the users.json file to add more users\n(make sure new users have a name, username, and password)"
+);
 
 app.use(bodyParser.json());
 app.use(
@@ -39,6 +48,7 @@ app.use(logger);
 app.post("/login", async (req, res) => {
   loginUser(req.body.username, req.body.password)
     .then((data, err) => {
+      req.session.name = data.name;
       res.status(200);
       res.json(data);
     })
@@ -49,7 +59,17 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/logout", async (req, res) => {
-  req.session.destroy();
+  req.session.destroy((err) => {
+    if (err) {
+      res.sendStatus(400);
+    } else {
+      res.sendStatus(200);
+    }
+  });
+});
+
+app.get("/name", async (req, res) => {
+  res.json(req.session.name);
 });
 
 async function loginUser(username, password) {
@@ -59,7 +79,7 @@ async function loginUser(username, password) {
     if (user.username === username) {
       console.log("Found User");
       if (user.password === password) {
-        foundUser = user;
+        foundUser = { name: user.name, username: user.username };
         return;
       } else {
         console.log("Incorrect Password");
@@ -74,7 +94,5 @@ async function loginUser(username, password) {
     throw new Error("Incorrect username or password");
   }
 }
-
-// console.log(loginUser("test", "1234"));
 
 app.listen(process.env.PORT || 3000);
