@@ -72,7 +72,11 @@ app.post("/logout", async (req, res) => {
 });
 
 app.get("/name", async (req, res) => {
-  res.json(req.session.name);
+  if (req.session.name !== undefined) {
+    res.json(req.session.name);
+  } else {
+    res.sendStatus(400);
+  }
 });
 
 async function loginUser(username, password) {
