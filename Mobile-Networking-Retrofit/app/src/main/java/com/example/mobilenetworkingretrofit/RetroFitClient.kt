@@ -32,57 +32,33 @@ object RetroFitClient {
     private val cookieJar: CookieJar = object : CookieJar {
         private val cookieStore = HashMap<String, List<Cookie>>()
         override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-            Log.d(TAG,url.host());
 
-                val prefsKey = PREFS_KEY_PREFIX + url.host()
+            val prefsKey = PREFS_KEY_PREFIX + url.host()
 
-//                if (!prefs.contains(prefsKey)) {
-                    val json = Gson().toJson(cookies)
+            val json = Gson().toJson(cookies)
 
-                    prefsEditor.putString(prefsKey, json)
-                    prefsEditor.commit()
-//                } else {
-//                    val json = prefs.getString(prefsKey, "")
-//                    val listType = object : TypeToken<List<Cookie>>() {}.type
-//                    val cookiesList = Gson().fromJson<List<Cookie>>(json, listType)
-//                    var store = false;
+            prefsEditor.putString(prefsKey, json)
+            prefsEditor.commit()
 
-//                    for(newCookie in cookies){
-//                        for (oldCookie in cookiesList) {
-//                            if(oldCookie.expiresAt() < newCookie.expiresAt() || oldCookie.expiresAt() < System.currentTimeMillis()){
-//                                store = true;
-//                            }
-//                        }
-//                    }
-
-//                    if(store){
-//                        val json = Gson().toJson(cookies)
-//
-//                        prefsEditor.putString(prefsKey, json)
-//                        prefsEditor.commit()
-//                    }
-//                }
-
-                cookieStore[url.host()] = cookies
+            cookieStore[url.host()] = cookies
 
         }
 
         override fun loadForRequest(url: HttpUrl): List<Cookie> {
-            Log.d(TAG,"Load " + url.host());
 
-                val cookies = cookieStore[url.host()]
-                val prefsKey = PREFS_KEY_PREFIX + url.host()
+            val cookies = cookieStore[url.host()]
+            val prefsKey = PREFS_KEY_PREFIX + url.host()
 
-                if (cookies == null && prefs.contains(prefsKey)) {
-                    val json = prefs.getString(prefsKey, "")
+            if (cookies == null && prefs.contains(prefsKey)) {
+                val json = prefs.getString(prefsKey, "")
 
-                    val listType = object : TypeToken<List<Cookie>>() {}.type
-                    val cookiesList = Gson().fromJson<List<Cookie>>(json, listType)
+                val listType = object : TypeToken<List<Cookie>>() {}.type
+                val cookiesList = Gson().fromJson<List<Cookie>>(json, listType)
 
-                    return cookiesList;
-                }
+                return cookiesList
+            }
 
-                return cookies ?: ArrayList()
+            return cookies ?: ArrayList()
 
         }
     }
@@ -91,23 +67,23 @@ object RetroFitClient {
         .cookieJar(cookieJar)
         .build()
 
-    fun checkCookie():Boolean {
+    fun checkCookie(): Boolean {
 
         val prefsKey = PREFS_KEY_PREFIX + HOST_NAME
 
-        if(prefs.contains(prefsKey)){
+        if (prefs.contains(prefsKey)) {
             val json = prefs.getString(prefsKey, "")
             val listType = object : TypeToken<List<Cookie>>() {}.type
             val cookiesList = Gson().fromJson<List<Cookie>>(json, listType)
 
             for (cookie in cookiesList) {
-                if(cookie.expiresAt() < System.currentTimeMillis()){
+                if (cookie.expiresAt() < System.currentTimeMillis()) {
                     return false
                 }
             }
 
             return true
-        }else{
+        } else {
             return false
         }
     }
@@ -115,7 +91,7 @@ object RetroFitClient {
     fun deleteCookie() {
         val prefsKey = PREFS_KEY_PREFIX + HOST_NAME
 
-        if(prefs.contains(prefsKey)){
+        if (prefs.contains(prefsKey)) {
             prefsEditor.remove(prefsKey).commit()
         }
     }
