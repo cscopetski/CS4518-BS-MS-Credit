@@ -11,11 +11,14 @@ console.log("List of users:");
 console.log(users);
 
 console.log(
-  "\n*Normally passwords would never be stored as plain-text, they are here for easy testing purposes*\n"
+  "\n*Normally passwords would never be stored as plain-text, this is just for testing purposes*\n"
 );
 
 console.log(
   "You can edit the users.json file to add more users\n(make sure new users have a name, username, and password)"
+);
+console.log(
+  "If edits are made to the users.json file, restart the server for the changes to take effect"
 );
 
 app.use(bodyParser.json());
